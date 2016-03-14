@@ -1,0 +1,162 @@
+
+\documentclass{beamer}
+\usepackage[cm-default]{fontspec}
+\setromanfont{FreeSerif}
+\setsansfont{FreeSans}
+\setmonofont{FreeMono}
+\usepackage{geometry}
+%\geometry{screen}
+\usepackage{listings}
+\lstset{
+        language=bash,
+        morekeywords={bool},
+        tabsize=4,
+        basicstyle={\ttfamily\small},
+        numbers=left,
+        numberstyle=\footnotesize,
+        stepnumber=1,
+        numbersep=4pt,
+        showstringspaces=false,
+        showspaces=false,
+        showtabs=false,
+        backgroundcolor=\color{white},
+        commentstyle={\em\color{magenta}},
+}
+\usetheme{Warsaw}
+\title[Provisioning Virtual Networks]{using Junos, Vagrant and Αnsible}
+\author{Alexandros Kosiaris akosiaris@gmail.com}
+\institute{GRNOG - X Technical Meeting}
+\date{XX XXXX 2016}
+\begin{document}
+
+\AtBeginSubsection[]
+{
+    \begin{frame}<beamer>
+        \frametitle{Layout}
+        \tableofcontents[currentsection,currentsubsection]
+    \end{frame}
+}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Introduction}
+
+    \begin{frame}{Problem statement}
+        Provisioning a new server/switch/router/VM has traditionally been a hard process
+
+        \begin{itemize}
+            \pause \item Time/Resource consuming
+            \begin{itemize}
+                \pause \item At least one person allocated to it, if not more
+                \pause \item Download OS/Install OS/Reboot/Setup OS/Reboot/Reboot/Reboot
+                \pause \item Errors, errors, errors
+            \end{itemize}
+            \pause \item Causes divergence in infrastructure
+                \pause \item One person does things one way, another person another way
+		\pause \item N = X * Y possible configurations (X=people, Y=ways of doing something)
+        \end{itemize}
+
+    \end{frame}
+
+    \begin{frame}{Solutions}
+	Various approaches of automation at multiple levels:
+        \begin{itemize}
+	    \pause \item At the image Level (Norton Ghost, Live Image, VMWare, Virtualbox, EC2, etc)
+	    \pause \item At the installation level (Unattended Installation, Debian preseed, FAI, Kickstart, custom)
+	    \pause \item At the configuration level (CFEngine, Puppet, Chef, Ansible, custom)
+        \end{itemize}
+
+        \pause And their combinations whenever applicable!!!
+
+    \end{frame}
+
+    \begin{frame}{Survey}
+	4 different classes (as devised by the presenter)
+        \begin{itemize}
+	    \item No automation at all
+	    \item Image/Installation level automation
+	    \item Configuration Level automation
+	    \item Combination of 2 and 3
+        \end{itemize}
+    \end{frame}
+
+\section{Vagrant}
+    \begin{frame}{What is Vagrant?}
+
+    \pause \begin{block}{Wikipedia says:}
+		Vagrant is computer software that creates and configures virtual development environments.
+		It can be seen as a higher-level wrapper around virtualization software such as VirtualBox,
+		VMware, KVM and Linux Containers (LXC), and around configuration management software such as Ansible, Chef, Salt, and Puppet.
+    \end{block}
+
+    \pause Sounds great! Now, WHAT ACTUALLY IS Vagrant?
+    \end{frame}
+
+    \begin{frame}{WHAT IS VAGRANT?}
+	    In the presenter's own words ?
+        \begin{itemize}
+	    \pause \item A framework AND a tool
+	    \pause \item A really easy way to spin up a fleet of VMs (and/or containers)
+	    \pause \item A way to manage the lifecycle of VMs
+	    \pause \item A way to provision, ensure and manage the configuration of VMs
+	    \pause \item A tool to make our work more reproducible, with less bugs and more productive
+        \end{itemize}
+	A tool to just make my (our?) lives easier
+    \end{frame}
+
+    \begin{frame}{Vagrant as a Framework}
+	    It's a framework. So plugins, plugins, plugins
+        \begin{itemize}
+		\pause \item Plugins to manage VMs, called Providers (Virtualbox, VMware, EC2, Ganeti, Azure, Rackspace, Docker, you name it)
+		\pause \item Plugins to provision VMs, called Provisioners (Puppet, Chef, Ansible, fabric, docker compose, you write it)
+		\pause \item Plugins to "know" VMs (Linux, Windows, BSDs, CoreOS, and others)
+		\pause \item Plugins to communicate with VMs (SSH, WinRM, Shared folders, etc)
+        \end{itemize}
+	And a growing set of things like DNS management, Host communication, snapshots and others
+    \end{frame}
+
+    \begin{frame}{Vagrant as a Tool}
+	    It's a framework. But it does ship with multiple plugins:
+        \begin{itemize}
+		\pause \item Providers: Docker, HyperV, Virtualbox. Virtualbox is the default
+		\pause \item Provisioners: Docker, file, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
+        \end{itemize}
+	\pause And allows you to download VM images off the internet
+	\pause \\* And YES, Juniper does provide some to the world!
+    \end{frame}
+
+    \begin{frame}{Vagrant for the first time}
+	    Run vagrant init in an empty folder. You get the following Vagrantfile (minus the comments)
+	    \lstinputlisting{Vagrantfile.simple}
+	    Now run vagrant up and you have your one base VM
+    \end{frame}
+    \begin{frame}{Let's spice it a bit}
+	    Run vagrant init juniper/ffp-12.1X47-D15.4-packetmode and edit it. It's Ruby:
+	    \small \lstinputlisting{Vagrantfile.junos}
+    \end{frame}
+
+\section{Ansible}
+    \begin{frame}{What is Ansible?}
+    \pause \begin{block}{Wikipedia says:}
+	    Ansible, a free-software platform for configuring and managing computers, combines multi-node software deployment,
+	    ad hoc task execution, and configuration management. It manages nodes (which must have Python 2.4 or later installed on them)
+	    over SSH or over PowerShell. Modules work over JSON and standard output and can be written in any programming language.
+	    The system uses YAML to express reusable descriptions of systems.
+    \end{block}
+    \pause That sounds... unhelpful! WHAT ACTUALLY IS Vagrant?
+    \end{frame}
+
+    \begin{frame}{WHAT IS ANSIBLE?}
+	    In the presenter's own words ?
+        \begin{itemize}
+	    \pause \item A way to write configuration
+	    \pause \item A way to push above said configuration to nodes
+	    \pause \item A way to ensure configuration of nodes
+	    \pause \item A Configuration Management System
+        \end{itemize}
+    \end{frame}
+
+%        \lstinputlisting{raw.sh}
+\end{document}
