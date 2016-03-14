@@ -1,0 +1,243 @@
+\documentclass{beamer}
+\usepackage[cm-default]{fontspec}
+\setromanfont{FreeSerif}
+\setsansfont{FreeSans}
+\setmonofont{FreeMono}
+\usepackage{geometry}
+%\geometry{screen}
+\usepackage{listings}
+\lstset{
+        language=bash,
+        morekeywords={bool},
+        tabsize=4,
+        basicstyle={\ttfamily\small},
+        numbers=left,
+        numberstyle=\footnotesize,
+        stepnumber=1,
+        numbersep=4pt,
+        showstringspaces=false,
+        showspaces=false,
+        showtabs=false,
+        backgroundcolor=\color{white},
+        commentstyle={\em\color{magenta}},
+}
+\usetheme{Warsaw}
+\title[FreeBSD Jails]{FreeBSD Jails \\ Lightweight Virtualization?}
+\author{Αλέξανδρος Κοσιάρης alex@noc.grnet.gr}
+\institute{Πανεπιστήμιο Πειραιά - Software Libre Society}
+\date{17 Σεπτεμβρίου 2010}
+\begin{document}
+
+\AtBeginSubsection[]
+{
+    \begin{frame}<beamer>
+        \frametitle{Layout}
+        \tableofcontents[currentsection,currentsubsection]
+    \end{frame}
+}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Εισαγωγή}
+
+    \begin{frame}{Το πρόβλημα}
+        Το κλασσικό μοντέλο ασφαλείας (DAC) του UNIX κάνει δύσκολη τη ζωή του διαχειριστή
+
+        \begin{itemize}
+            \pause \item Ανθρώποι/ομάδες που δεν έχουν σχέσεις εμπιστοσύνης μεταξύ τους (ή ακόμη και με τον ίδιο)
+            \pause \item Συνεχής ανάγκη αναπροσαρμογής των κανόνων από τον διαχειριστή
+            \pause \item Λιγοστές δυνατότητες ανάθεσης δικαιωμάτων σε άλλους χρήστες
+            \pause \item Πρακτικά δύο είδη χρηστών: ο root, και... οι υπόλοιποι
+        \end{itemize}
+
+    \end{frame}
+
+    \begin{frame}{Λύσεις;}
+        Έχουν προταθεί και υλοποιηθεί διάφορες λύσεις
+
+        \begin{itemize}
+            \item \texttt{sudo}
+            \item \texttt{chroot(2)}
+            \item Filesystem ACLs
+            \item Mandatory Access Control (SELinux, AppArmor, TrustedBSD, RSBAC, Solaris roles,...)
+            \item Virtualization...
+        \end{itemize}
+
+        \pause Κάποια ασχολούνται με να κλειδώσουν κάπου(και σε κάποια επίπεδα) τους χρήστες δίνοντας τους μόνο τα απαραίτητα, άλλα προσθέτουν δυνατότητες στο DAC ώστε να είναι πιο εύκολος ο έλεγχος και κάποια επιλέγουν να τους πετάξουν σε ένα άλλο παράλληλο και μακρινό σύμπαν
+
+    \end{frame}
+
+\section{FreeBSD Jails}
+    \begin{frame}{Ακόμη μία λύση;}
+
+        \begin{block}{Ακόμη μία λύση!}
+            Enter FreeBSD Jails
+        \end{block}
+
+        Η ιδέα προτάθηκε από τον Poul-Henning Kamp και τον Robert Watson το 2000, και εμφανίστηκε για πρώτη φορά(υλοποιημένη από τον phk) στο FreeBSD 4.0
+
+    \end{frame}
+
+    \begin{frame}{Τι είναι τα Jails;}
+        \begin{block}{FreeBSD jail είναι:}
+            Μία εξέλιξη του chroot(2) syscall ώστε να υπάρχει διαχωρισμός μίας διεργασίας και των παιδιών της όχι μόνο στο επίπεδο του filesystem αλλά και στα επίπεδα των διεργασιών και δικτύου
+        \end{block}
+        Μία διεργασία μέσα σε ένα jailed περιβάλλον δεν μπορεί:
+        \begin{itemize}
+            \item Να δεί ή αλληλεπιδράσει με διεργασίες εκτός του jail
+            \item Να μεταβάλλει με οποιονδήποτε τρόπο τον πυρήνα
+            \item Να προσαρτήσει(mount) άλλα filesystems
+            \item Να δει άλλο μέρος του filesystem πέρα του δικού του
+            \item Να δημιουργήσει device nodes(aka mknod)
+            \item Nα αλλάξει/χρησιμοποιήσει δικτυακούς πόρους
+        \end{itemize}
+
+    \end{frame}
+
+    \begin{frame}{Απαιτούμενα}
+        Ένα jail χρειάζεται:
+        \begin{itemize}
+            \item Ένα FreeBSD filesystem hierarchy
+            \item Μία IP διεύθυνση(μοιρασμένη με τον host)(optional)
+            \item Μία διεργασία που θα τρέξει στoν jailed χώρο
+        \end{itemize}
+        Εάν το αρχικό πρόγραμμα που θα τρέξει είναι το /etc/rc μπορούμε να σηκώσουμε ένα ολόκληρο Virtual FreeBSD σύστημα
+
+    \end{frame}
+
+    \begin{frame}{Πλεονεκτήματα}
+        \begin{itemize}
+            \item Εξαιρετικά φτηνό virtualization - Ελάχιστη χρήση σε δίσκο και κυρίως μνήμη
+            \pause \item Πλήρης διαχωρισμός των διαφόρων jails - χρηστών/ομάδων
+            \pause \item Προσβάσιμο από τον host το guest σύστημα 
+            \begin{itemize}
+                \item Διαχείριση
+                \item Αναβάθμιση
+                \item Παρακολούθηση
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Μειονεκτήματα}
+        \begin{itemize}
+        \item Κοινό networking stack για όλα τα jails (και τον host)
+        \pause \item Έλλειψη εύκολα διαχειρίσιμων μηχανισμών quota
+        \begin{itemize}
+            \pause \item Δίσκου
+            \pause \item Μνήμης
+            \pause \item CPU (Τα CPU Sets διορθώνουν αυτό μερικώς στο FreeBSD 7.1)
+            \pause \item Δικτύου
+        \end{itemize}
+        \pause \item Λειψό networking stack
+            \begin{itemize}
+                \pause \item Μία IPv4 διεύθυνση per jail ( για <FreeBSD 8.0)
+                \pause \item No IPv6 ( για < FreeBSD 8.0)
+                \pause \item To localhost είναι βραχυκυκλωμένο. Προβλήματα με TCP wrappers,
+                             Application Level ACLs(πχ apache)
+                \pause \item No firewall support
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+
+\section{Low-level διαδικασία κατασκευής jail}
+
+    \begin{frame}{Προετοιμασία Host}
+    \begin{itemize}
+        \item Bind όλες οι υπηρεσίες στην μία IP,IPv6 του host
+        \begin{itemize}
+        \item sendmail\_enable="NO"
+        \item inetd\_flags="-wW -a 10.10.10.10"
+        \item rpcbind\_enable="NO"
+        \item syslogd\_flags="-s -b 10.10.10.10"
+        \item sshd\_config ListenAddress
+        \end{itemize}
+    \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Προετοιμασία Host (2)}
+        \lstinputlisting{raw.sh}
+    Εργαλεία
+    \begin{itemize}
+        \item jls - Δείχνει τα running jails
+        \item jexec - Με argument το jailid (από την jls) και ένα command(πχ tcsh) μπαίνεις στο jail
+    \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Προετοιμασία Jail}
+    Ένα νέο jail είναι σαν να έχει γίνει μόλις installed. Χρειάζεται:
+    \begin{itemize}
+        \item Ένα άδειο fstab
+        \item Disabled τον portmapper (rpcbind\_enable="NO" στο /etc/rc.conf")
+        \item /etc/resolv.conf
+        \item newaliases για να μην γκρινιάζει το sendmail
+        \item network\_interfaces="" στο /etc/rc.conf
+        \item Root password
+        \item Timezone
+    \end{itemize}
+    Και είμαστε έτοιμοι.
+    \end{frame}
+
+\section{Tips and tricks}
+    \begin{frame}
+            \frametitle{OS Tricks}
+        Για να ξεκινάνε τα jails on host boot βάζουμε περίπου τα εξής στο /etc/rc.conf
+        \lstinputlisting{rc.conf}
+    \end{frame}
+
+    \begin{frame}{jailctl}
+        Σχετικά παλιό εργαλείο. Επιτρέπει εύκολα:
+        \begin{itemize}
+            \item Δημιουργία/καταστροφή
+            \item Εκκίνηση/τερματισμό
+            \item Αναβάθμιση/backup/restore
+        \end{itemize}
+        Μειονεκτήματα:
+        \begin{itemize}
+            \item Το πρώτο jail φτιάχνεται χειροκίνητα
+            \item Σχετικά υψηλή χρήση δίσκου(σε σχέση με άλλα εργαλεία)
+            \item Non-maintained
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{ezjail}
+        Νεώτερο εργαλείο. Ακόμη αναπτύσσεται. Επιτρέπει:
+        \begin{itemize}
+            \item Binary εγκατάσταση/αναβάθμιση/καταστροφή
+            \item Πολύ φτηνά jails σε χώρο(2ΜΒ)
+            \item Εύκολη αναβάθμιση
+            \item Flavours(πχ FAMP, LDAP κτλ)
+            \item ZFS jails
+            \item Jail specific Routing Tables ( μέσω του setfib(2) )
+            \item CPUSets
+        \end{itemize}
+        Ένα μειονέκτημα: Δεν ξεκινά αυτόματα τα jails με δικτύωση. Υπάρχουν trivial patches αλλά δεν γίνονται δεκτά upstream. Ευτυχώς το patch management των FreeBSD ports δουλεύει υπέροχα.
+    \end{frame}
+
+\section{Back to Future}
+    \begin{frame}{FreeBSD 8.x}
+        \begin{block}{VIMAGE}
+            VIMAGE(Experimental): Ένας νέος τύπος container. Πρόκειται για ένα jail με virtualized networking stack
+        \end{block}
+        Virtualized:
+        \begin{itemize}
+            \item IPv4,IPv6
+            \item NFS
+            \item IPFW / PF firewalls,
+            \item BPF, raw / routing sockets...
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Use Cases}
+        Χρησιμοποιείται από:
+        \begin{itemize}
+            \item PostgreSQL
+            \item eUKhost
+            \item RootBSD
+            \item InetServices
+            \item NTUA NOC
+        \end{itemize}
+    \end{frame}
+
+\end{document}
