@@ -8,12 +8,12 @@
 %\geometry{screen}
 \usepackage{listings}
 \lstset{
-        language=bash,
+        language=Ruby,
         morekeywords={bool},
-        tabsize=4,
-        basicstyle={\ttfamily\small},
+        tabsize=2,
+        basicstyle={\ttfamily\tiny},
         numbers=left,
-        numberstyle=\footnotesize,
+        numberstyle=\tiny,
         stepnumber=1,
         numbersep=4pt,
         showstringspaces=false,
@@ -85,7 +85,7 @@
 \section{Vagrant}
     \begin{frame}{What is Vagrant?}
 
-    \pause \begin{block}{Wikipedia says:}
+    \begin{block}{Wikipedia says:}
 		Vagrant is computer software that creates and configures virtual development environments.
 		It can be seen as a higher-level wrapper around virtualization software such as VirtualBox,
 		VMware, KVM and Linux Containers (LXC), and around configuration management software such as Ansible, Chef, Salt, and Puppet.
@@ -127,19 +127,24 @@
 	\pause \\* And YES, Juniper does provide some to the world!
     \end{frame}
 
+    \begin{frame}{Vagrant => Reproducible Environments}
+	    Key Takeaway?
+	\pause \\ REPRODUCIBLE ENVIRONMENTS!
+    \end{frame}
+
     \begin{frame}{Vagrant for the first time}
 	    Run vagrant init in an empty folder. You get the following Vagrantfile (minus the comments)
 	    \lstinputlisting{Vagrantfile.simple}
-	    Now run vagrant up and you have your one base VM
+	    Now run vagrant up and you have your one base VM. Run vagrant destroy and kill it
     \end{frame}
     \begin{frame}{Let's spice it a bit}
-	    Run vagrant init juniper/ffp-12.1X47-D15.4-packetmode and edit it. It's Ruby:
-	    \small \lstinputlisting{Vagrantfile.junos}
+	    vagrant init juniper/ffp-12.1X47-D15.4-packetmode. Edit. It's Ruby
+	    \lstinputlisting{Vagrantfile.junos}
     \end{frame}
 
 \section{Ansible}
     \begin{frame}{What is Ansible?}
-    \pause \begin{block}{Wikipedia says:}
+    \begin{block}{Wikipedia says:}
 	    Ansible, a free-software platform for configuring and managing computers, combines multi-node software deployment,
 	    ad hoc task execution, and configuration management. It manages nodes (which must have Python 2.4 or later installed on them)
 	    over SSH or over PowerShell. Modules work over JSON and standard output and can be written in any programming language.
