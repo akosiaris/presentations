@@ -1,10 +1,14 @@
 
+
 \documentclass{beamer}
 \usepackage[cm-default]{fontspec}
 \setromanfont{FreeSerif}
 \setsansfont{FreeSans}
 \setmonofont{FreeMono}
 \usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{snakes,arrows,shapes}
+\usepackage{amsmath}
 %\geometry{screen}
 \usepackage{listings}
 \lstset{
@@ -23,10 +27,10 @@
         commentstyle={\em\color{magenta}},
 }
 \usetheme{Warsaw}
-\title[Provisioning Virtual Networks]{using Junos, Vagrant and Αnsible}
-\author{Alexandros Kosiaris akosiaris@gmail.com}
-\institute{GRNOG - X Technical Meeting}
-\date{XX XXXX 2016}
+\title[Provisioning Virtual Networks]{Provisioning Virtual Networks using Junos, Vagrant and Αnsible}
+\author{Alexandros Kosiaris <akosiaris@gmail.com>}
+\institute{GRNOG - 3rd Technical Meeting}
+\date{10 Jun 2016}
 \begin{document}
 
 \AtBeginSubsection[]
@@ -51,30 +55,38 @@
             \begin{itemize}
                 \pause \item At least one person allocated to it, if not more
                 \pause \item Download OS/Install OS/Reboot/Setup OS/Reboot/Reboot/Reboot
-                \pause \item Errors, errors, errors
+                \pause \item Fix Errors, Rinse, Repeat
             \end{itemize}
             \pause \item Causes divergence in infrastructure
-                \pause \item One person does things one way, another person another way
-		\pause \item N = X * Y possible configurations (X=people, Y=ways of doing something)
+            \begin{itemize}
+                \pause \item People tend to do things in different ways
+		\pause \item Up to  X * Y * Z possible configurations (X=\# people, Y=\# number of settings, Z=\# ways of doing something)
+            \end{itemize}
         \end{itemize}
 
+    \end{frame}
+
+    \begin{frame}{Solution?}
+	\begin{center}
+	\Huge !!!Automation!!!
+	\end{center}
     \end{frame}
 
     \begin{frame}{Solutions}
 	Various approaches of automation at multiple levels:
         \begin{itemize}
-	    \pause \item At the image Level (Norton Ghost, Live Image, VMWare, Virtualbox, EC2, etc)
+	    \pause \item At the image Level (Norton Ghost, Live Image, VMWare, Virtualbox, EC2, etc) - Cattle vs Pets!
 	    \pause \item At the installation level (Unattended Installation, Debian preseed, FAI, Kickstart, custom)
-	    \pause \item At the configuration level (CFEngine, Puppet, Chef, Ansible, custom)
+	    \pause \item At the configuration level (CFEngine, Puppet, Chef, Ansible, custom) - Configuration as code!
         \end{itemize}
 
         \pause And their combinations whenever applicable!!!
 
     \end{frame}
 
-    \begin{frame}{Survey}
+    \begin{frame}{An informal survey}
 	4 different classes (as devised by the presenter)
-        \begin{itemize}
+	\begin{itemize}
 	    \item No automation at all
 	    \item Image/Installation level automation
 	    \item Configuration Level automation
@@ -101,13 +113,13 @@
 	    \pause \item A really easy way to spin up a fleet of VMs (and/or containers)
 	    \pause \item A way to manage the lifecycle of VMs
 	    \pause \item A way to provision, ensure and manage the configuration of VMs
-	    \pause \item A tool to make our work more reproducible, with less bugs and more productive
+	    \pause \item A tool to make working with systems reproducible, less buggy and faster
         \end{itemize}
 	A tool to just make my (our?) lives easier
     \end{frame}
 
     \begin{frame}{Vagrant as a Framework}
-	    It's a framework. So plugins, plugins, plugins
+	    It's a framework. It's scaffolding and plugins, plugins, plugins
         \begin{itemize}
 		\pause \item Plugins to manage VMs, called Providers (Virtualbox, VMware, EC2, Ganeti, Azure, Rackspace, Docker, you name it)
 		\pause \item Plugins to provision VMs, called Provisioners (Puppet, Chef, Ansible, fabric, docker compose, you write it)
@@ -118,7 +130,7 @@
     \end{frame}
 
     \begin{frame}{Vagrant as a Tool}
-	    It's a framework. But it does ship with multiple plugins:
+	    It's a framework. But it does ship with multiple plugins by default
         \begin{itemize}
 		\pause \item Providers: Docker, HyperV, Virtualbox. Virtualbox is the default
 		\pause \item Provisioners: Docker, file, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
@@ -128,18 +140,56 @@
     \end{frame}
 
     \begin{frame}{Vagrant => Reproducible Environments}
-	    Key Takeaway?
+	\begin{center}
+	\Huge Key Takeaway ?
 	\pause \\ REPRODUCIBLE ENVIRONMENTS!
+	\end{center}
     \end{frame}
 
     \begin{frame}{Vagrant for the first time}
-	    Run vagrant init in an empty folder. You get the following Vagrantfile (minus the comments)
+	    Run \textbf{vagrant init} in an empty folder. You get the following Vagrantfile (minus the comments)
 	    \lstinputlisting{Vagrantfile.simple}
-	    Now run vagrant up and you have your one base VM. Run vagrant destroy and kill it
+	    Now run \textbf{vagrant up} and you have your one base VM. Run \textbf{vagrant destroy} and kill it
     \end{frame}
-    \begin{frame}{Let's spice it a bit}
-	    vagrant init juniper/ffp-12.1X47-D15.4-packetmode. Edit. It's Ruby
+    \begin{frame}{Let's spice it up a bit}
+	    \textbf{vagrant init juniper/ffp-12.1X47-D15.4-packetmode}. Edit. It's Ruby
 	    \lstinputlisting{Vagrantfile.junos}
+    \end{frame}
+
+    \begin{frame}{Let's spice it up a bit (2)}
+	%\enlargethispage{100cm}
+	% Start of code
+	% \begin{tikzpicture}[anchor=mid,>=latex',line join=bevel,]
+	\begin{tikzpicture}[>=latex',line join=bevel,]
+	  \pgfsetlinewidth{1bp}
+	%%
+	\pgfsetcolor{black}
+	  % Edge: vsrx01 -- vsrx02
+	  \draw [] (67.474bp,72.765bp) .. controls (60.626bp,61.618bp) and (51.564bp,46.865bp)  .. (44.665bp,35.633bp);
+	  % Edge: vsrx01 -- vsrx03
+	  \draw [] (87.652bp,72.765bp) .. controls (94.659bp,61.618bp) and (103.93bp,46.865bp)  .. (110.99bp,35.633bp);
+	  % Edge: vsrx02 -- vsrx03
+	  \draw [] (69.111bp,18.0bp) .. controls (74.972bp,18.0bp) and (80.832bp,18.0bp)  .. (86.693bp,18.0bp);
+	  % Node: vsrx01
+	\begin{scope}
+	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+	  \pgfsetstrokecolor{strokecol}
+	  \draw (77.447bp,90.0bp) node {vsrx01};
+	\end{scope}
+	  % Node: vsrx03
+	\begin{scope}
+	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+	  \pgfsetstrokecolor{strokecol}
+	  \draw (121.45bp,18.0bp) node {vsrx03};
+	\end{scope}
+	  % Node: vsrx02
+	\begin{scope}
+	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+	  \pgfsetstrokecolor{strokecol}
+	  \draw (34.447bp,18.0bp) node {vsrx02};
+	\end{scope}
+	%
+	\end{tikzpicture}
     \end{frame}
 
 \section{Ansible}
@@ -154,14 +204,14 @@
     \end{frame}
 
     \begin{frame}{WHAT IS ANSIBLE?}
-	    In the presenter's own words ?
+	In the presenter's own words ?
         \begin{itemize}
 	    \pause \item A way to write configuration
 	    \pause \item A way to push above said configuration to nodes
 	    \pause \item A way to ensure configuration of nodes
-	    \pause \item A Configuration Management System
         \end{itemize}
+	\begin{center}
+		\pause A Configuration Management System!
+	\end{center}
     \end{frame}
-
-%        \lstinputlisting{raw.sh}
 \end{document}
