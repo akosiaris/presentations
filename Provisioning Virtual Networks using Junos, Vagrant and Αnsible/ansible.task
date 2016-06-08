@@ -1,0 +1,3 @@
+- name: Install apache2 package
+  sudo: true
+  apt: name=apache2 state=installed

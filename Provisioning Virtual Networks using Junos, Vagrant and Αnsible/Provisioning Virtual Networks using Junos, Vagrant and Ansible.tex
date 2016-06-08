@@ -60,24 +60,24 @@
             \pause \item Causes divergence in infrastructure
             \begin{itemize}
                 \pause \item People tend to do things in different ways
-		\pause \item Up to  X * Y * Z possible configurations (X=\# people, Y=\# number of settings, Z=\# ways of doing something)
+        \pause \item Up to  X * Y * Z possible configurations (X=\# people, Y=\# number of settings, Z=\# ways of doing something)
             \end{itemize}
         \end{itemize}
 
     \end{frame}
 
     \begin{frame}{Solution?}
-	\begin{center}
-	\Huge !!!Automation!!!
-	\end{center}
+    \begin{center}
+    \Huge !!!Automation!!!
+    \end{center}
     \end{frame}
 
     \begin{frame}{Solutions}
-	Various approaches of automation at multiple levels:
+    Various approaches of automation at multiple levels:
         \begin{itemize}
-	    \pause \item At the image Level (Norton Ghost, Live Image, VMWare, Virtualbox, EC2, etc) - Cattle vs Pets!
-	    \pause \item At the installation level (Unattended Installation, Debian preseed, FAI, Kickstart, custom)
-	    \pause \item At the configuration level (CFEngine, Puppet, Chef, Ansible, custom) - Configuration as code!
+        \pause \item At the image Level (Norton Ghost, Live Image, VMWare, Virtualbox, EC2, etc) - Cattle vs Pets!
+        \pause \item At the installation level (Unattended Installation, Debian preseed, FAI, Kickstart, custom)
+        \pause \item At the configuration level (CFEngine, Puppet, Chef, Ansible, custom) - Configuration as code!
         \end{itemize}
 
         \pause And their combinations whenever applicable!!!
@@ -85,12 +85,12 @@
     \end{frame}
 
     \begin{frame}{An informal survey}
-	4 different classes (as devised by the presenter)
-	\begin{itemize}
-	    \item No automation at all
-	    \item Image/Installation level automation
-	    \item Configuration Level automation
-	    \item Combination of 2 and 3
+    4 different classes (as devised by the presenter)
+    \begin{itemize}
+        \item No automation at all
+        \item Image/Installation level automation
+        \item Configuration Level automation
+        \item Combination of 2 and 3
         \end{itemize}
     \end{frame}
 
@@ -98,120 +98,183 @@
     \begin{frame}{What is Vagrant?}
 
     \begin{block}{Wikipedia says:}
-		Vagrant is computer software that creates and configures virtual development environments.
-		It can be seen as a higher-level wrapper around virtualization software such as VirtualBox,
-		VMware, KVM and Linux Containers (LXC), and around configuration management software such as Ansible, Chef, Salt, and Puppet.
+        Vagrant is computer software that creates and configures virtual development environments.
+        It can be seen as a higher-level wrapper around virtualization software such as VirtualBox,
+        VMware, KVM and Linux Containers (LXC), and around configuration management software such as Ansible, Chef, Salt, and Puppet.
     \end{block}
 
     \pause Sounds great! Now, WHAT ACTUALLY IS Vagrant?
     \end{frame}
 
     \begin{frame}{WHAT IS VAGRANT?}
-	    In the presenter's own words ?
+        In the presenter's own words ?
         \begin{itemize}
-	    \pause \item A framework AND a tool
-	    \pause \item A really easy way to spin up a fleet of VMs (and/or containers)
-	    \pause \item A way to manage the lifecycle of VMs
-	    \pause \item A way to provision, ensure and manage the configuration of VMs
-	    \pause \item A tool to make working with systems reproducible, less buggy and faster
+        \pause \item A framework AND a tool
+        \pause \item A really easy way to spin up a fleet of VMs (and/or containers)
+        \pause \item A way to manage the lifecycle of VMs
+        \pause \item A way to provision, ensure and manage the configuration of VMs
+        \pause \item A tool to make working with systems reproducible, less buggy and faster
         \end{itemize}
-	A tool to just make my (our?) lives easier
+    A tool to just make my (our?) lives easier
     \end{frame}
 
     \begin{frame}{Vagrant as a Framework}
-	    It's a framework. It's scaffolding and plugins, plugins, plugins
+        It's a framework. It's scaffolding and plugins, plugins, plugins
         \begin{itemize}
-		\pause \item Plugins to manage VMs, called Providers (Virtualbox, VMware, EC2, Ganeti, Azure, Rackspace, Docker, you name it)
-		\pause \item Plugins to provision VMs, called Provisioners (Puppet, Chef, Ansible, fabric, docker compose, you write it)
-		\pause \item Plugins to "know" VMs (Linux, Windows, BSDs, CoreOS, and others)
-		\pause \item Plugins to communicate with VMs (SSH, WinRM, Shared folders, etc)
+        \pause \item Plugins to manage VMs, called Providers (Virtualbox, VMware, EC2, Ganeti, Azure, Rackspace, Docker, you name it)
+        \pause \item Plugins to provision VMs, called Provisioners (Puppet, Chef, Ansible, fabric, docker compose, you write it)
+        \pause \item Plugins to "know" VMs (Linux, Windows, BSDs, CoreOS, and others)
+        \pause \item Plugins to communicate with VMs (SSH, WinRM, Shared folders, etc)
         \end{itemize}
-	And a growing set of things like DNS management, Host communication, snapshots and others
+    And a growing set of things like DNS management, Host communication, snapshots and others
     \end{frame}
 
     \begin{frame}{Vagrant as a Tool}
-	    It's a framework. But it does ship with multiple plugins by default
+        It's a framework. But it does ship with multiple plugins by default
         \begin{itemize}
-		\pause \item Providers: Docker, HyperV, Virtualbox. Virtualbox is the default
-		\pause \item Provisioners: Docker, file, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
+        \pause \item Providers: Docker, HyperV, Virtualbox. Virtualbox is the default
+        \pause \item Provisioners: Docker, file, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
         \end{itemize}
-	\pause And allows you to download VM images off the internet
-	\pause \\* And YES, Juniper does provide some to the world!
+    \pause And allows you to download VM images off the internet
+    \pause \\* And YES, Juniper does provide some to the world!
     \end{frame}
 
     \begin{frame}{Vagrant => Reproducible Environments}
-	\begin{center}
-	\Huge Key Takeaway ?
-	\pause \\ REPRODUCIBLE ENVIRONMENTS!
-	\end{center}
+    \begin{center}
+    \Huge Key Takeaway ?
+    \pause \\ REPRODUCIBLE ENVIRONMENTS!
+    \end{center}
     \end{frame}
 
     \begin{frame}{Vagrant for the first time}
-	    Run \textbf{vagrant init} in an empty folder. You get the following Vagrantfile (minus the comments)
-	    \lstinputlisting{Vagrantfile.simple}
-	    Now run \textbf{vagrant up} and you have your one base VM. Run \textbf{vagrant destroy} and kill it
+        Run \textbf{vagrant init} in an empty folder. You get the following Vagrantfile (minus the comments)
+        \lstinputlisting{Vagrantfile.simple}
+        Now run \textbf{vagrant up} and you have your one base VM. Run \textbf{vagrant destroy} and kill it
     \end{frame}
     \begin{frame}{Let's spice it up a bit}
-	    \textbf{vagrant init juniper/ffp-12.1X47-D15.4-packetmode}. Edit. It's Ruby
-	    \lstinputlisting{Vagrantfile.junos}
+        \textbf{vagrant init juniper/ffp-12.1X47-D15.4-packetmode}. Edit. It's Ruby
+        \lstinputlisting{Vagrantfile.junos}
     \end{frame}
 
     \begin{frame}{Let's spice it up a bit (2)}
-	%\enlargethispage{100cm}
-	% Start of code
-	% \begin{tikzpicture}[anchor=mid,>=latex',line join=bevel,]
-	\begin{tikzpicture}[>=latex',line join=bevel,]
-	  \pgfsetlinewidth{1bp}
-	%%
-	\pgfsetcolor{black}
-	  % Edge: vsrx01 -- vsrx02
-	  \draw [] (67.474bp,72.765bp) .. controls (60.626bp,61.618bp) and (51.564bp,46.865bp)  .. (44.665bp,35.633bp);
-	  % Edge: vsrx01 -- vsrx03
-	  \draw [] (87.652bp,72.765bp) .. controls (94.659bp,61.618bp) and (103.93bp,46.865bp)  .. (110.99bp,35.633bp);
-	  % Edge: vsrx02 -- vsrx03
-	  \draw [] (69.111bp,18.0bp) .. controls (74.972bp,18.0bp) and (80.832bp,18.0bp)  .. (86.693bp,18.0bp);
-	  % Node: vsrx01
-	\begin{scope}
-	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
-	  \pgfsetstrokecolor{strokecol}
-	  \draw (77.447bp,90.0bp) node {vsrx01};
-	\end{scope}
-	  % Node: vsrx03
-	\begin{scope}
-	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
-	  \pgfsetstrokecolor{strokecol}
-	  \draw (121.45bp,18.0bp) node {vsrx03};
-	\end{scope}
-	  % Node: vsrx02
-	\begin{scope}
-	  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
-	  \pgfsetstrokecolor{strokecol}
-	  \draw (34.447bp,18.0bp) node {vsrx02};
-	\end{scope}
-	%
-	\end{tikzpicture}
+    %\enlargethispage{100cm}
+    % Start of code
+    % \begin{tikzpicture}[anchor=mid,>=latex',line join=bevel,]
+    \begin{tikzpicture}[>=latex',line join=bevel,]
+      \pgfsetlinewidth{1bp}
+    %%
+    \pgfsetcolor{black}
+      % Edge: vsrx01 -- vsrx02
+      \draw [] (67.474bp,72.765bp) .. controls (60.626bp,61.618bp) and (51.564bp,46.865bp)  .. (44.665bp,35.633bp);
+      % Edge: vsrx01 -- vsrx03
+      \draw [] (87.652bp,72.765bp) .. controls (94.659bp,61.618bp) and (103.93bp,46.865bp)  .. (110.99bp,35.633bp);
+      % Edge: vsrx02 -- vsrx03
+      \draw [] (69.111bp,18.0bp) .. controls (74.972bp,18.0bp) and (80.832bp,18.0bp)  .. (86.693bp,18.0bp);
+      % Node: vsrx01
+    \begin{scope}
+      \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+      \pgfsetstrokecolor{strokecol}
+      \draw (77.447bp,90.0bp) node {vsrx01};
+    \end{scope}
+      % Node: vsrx03
+    \begin{scope}
+      \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+      \pgfsetstrokecolor{strokecol}
+      \draw (121.45bp,18.0bp) node {vsrx03};
+    \end{scope}
+      % Node: vsrx02
+    \begin{scope}
+      \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+      \pgfsetstrokecolor{strokecol}
+      \draw (34.447bp,18.0bp) node {vsrx02};
+    \end{scope}
+    %
+    \end{tikzpicture}
     \end{frame}
 
 \section{Ansible}
     \begin{frame}{What is Ansible?}
     \begin{block}{Wikipedia says:}
-	    Ansible, a free-software platform for configuring and managing computers, combines multi-node software deployment,
-	    ad hoc task execution, and configuration management. It manages nodes (which must have Python 2.4 or later installed on them)
-	    over SSH or over PowerShell. Modules work over JSON and standard output and can be written in any programming language.
-	    The system uses YAML to express reusable descriptions of systems.
+        Ansible, a free-software platform for configuring and managing computers, combines multi-node software deployment,
+        ad hoc task execution, and configuration management. It manages nodes (which must have Python 2.4 or later installed on them)
+        over SSH or over PowerShell. Modules work over JSON and standard output and can be written in any programming language.
+        The system uses YAML to express reusable descriptions of systems.
     \end{block}
     \pause That sounds... unhelpful! WHAT ACTUALLY IS Vagrant?
     \end{frame}
 
     \begin{frame}{WHAT IS ANSIBLE?}
-	In the presenter's own words ?
+    In the presenter's own words ?
         \begin{itemize}
-	    \pause \item A way to write configuration
-	    \pause \item A way to push above said configuration to nodes
-	    \pause \item A way to ensure configuration of nodes
+        \pause \item A way to write configuration
+        \pause \item A way to push above said configuration to nodes
+        \pause \item A way to ensure configuration of nodes
         \end{itemize}
-	\begin{center}
-		\pause A Configuration Management System!
-	\end{center}
+    \begin{center}
+        \pause A Configuration Management System!
+    \end{center}
+    \end{frame}
+
+    \begin{frame}{How does it work?}
+        So how does ansible work? The basics:
+    \begin{itemize}
+        \pause \item Create an inventory file
+        \pause \item Define some tasks you want
+        \pause \item Group tasks and hosts into a playbook
+        \pause \item Apply the playbook
+    \end{itemize}
+    \pause  Let's see them quickly one by one
+    \end{frame}
+
+    \begin{frame}{Ansible inventory file}
+        Here's a very very simple ansible inventory.
+        \lstinputlisting{ansible.inventory}
+    \end{frame}
+    \begin{frame}{Ansible sample tasks}
+        Just install apache2 as a task
+        \lstinputlisting{ansible.task}
+    \end{frame}
+    \begin{frame}{Ansible playbooks}
+        Group them together in a playbook
+        \lstinputlisting{ansible.playbook}
+    \end{frame}
+
+\section{All in the mix}
+    \begin{frame}{How all this ties together?}
+        \begin{itemize}
+            \pause \item Vagrant provides an inventory file for us
+        \pause \item Junos supports NETCONF
+        \pause \item Juniper provides an ansible library with various tasks for junos
+        \pause \item We get to write the playbooks
+        \end{itemize}
+        \pause https://github.com/Juniper/ansible-junos-stdlib
+    \end{frame}
+    \begin{frame}{Enable RIP 1/3 - Vagrantfile}
+        \lstinputlisting{Vagrantfile.junos.rip}
+    \end{frame}
+    \begin{frame}{Enable RIP 2/3 - rip.yaml - The playbook}
+        \lstinputlisting{rip.yaml}
+    \end{frame}
+    \begin{frame}{Enable RIP 3/3 - rip.conf - The configuration}
+        \lstinputlisting{rip.conf}
+    \end{frame}
+    \begin{frame}{Demo}
+        \begin{center}
+            \Huge DEMO time!!
+        \end{center}
+    \end{frame}
+    \begin{frame}{Use cases}
+        Where to use that thing?
+        \begin{itemize}
+            \pause \item Learning
+            \pause \item Keeping firewall rules consistent across HA setups
+            \pause \item NFV
+            \pause \item You name it
+        \end{itemize}
+    \end{frame}
+    \begin{frame}{Questions}
+        \begin{center}
+            \Huge Questions ?
+        \end{center}
     \end{frame}
 \end{document}
