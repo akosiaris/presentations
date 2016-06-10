@@ -133,7 +133,7 @@
         It's a framework. But it does ship with multiple plugins by default
         \begin{itemize}
         \pause \item Providers: Docker, HyperV, Virtualbox. Virtualbox is the default
-        \pause \item Provisioners: Docker, file, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
+        \pause \item Provisioners: Docker, Puppet (server and solo), Chef (server and solo), Ansible, CFEngine, shell.
         \end{itemize}
     \pause And allows you to download VM images off the internet
     \pause \\* And YES, Juniper does provide some to the world!
@@ -221,7 +221,7 @@
         \pause \item Create an inventory file
         \pause \item Define some tasks you want
         \pause \item Group tasks and hosts into a playbook
-        \pause \item Apply the playbook
+        \pause \item Apply the playbook =>  \$ ansible-playbook -i hosts apache2.yaml
     \end{itemize}
     \pause  Let's see them quickly one by one
     \end{frame}
@@ -242,12 +242,12 @@
 \section{All in the mix}
     \begin{frame}{How all this ties together?}
         \begin{itemize}
-            \pause \item Vagrant provides an inventory file for us
-        \pause \item Junos supports NETCONF
-        \pause \item Juniper provides an ansible library with various tasks for junos
-        \pause \item We get to write the playbooks
+            \pause \item Vagrant provides an inventory file for us and calls ansible-playbook
+            \pause \item Junos supports NETCONF
+	    \pause \item Juniper provides an ansible library with various tasks for junos
+            \pause \item We get to write the playbooks
         \end{itemize}
-        \pause https://github.com/Juniper/ansible-junos-stdlib
+	\pause https://github.com/Juniper/ansible-junos-stdlib
     \end{frame}
     \begin{frame}{Enable RIP 1/3 - Vagrantfile}
         \lstinputlisting{Vagrantfile.junos.rip}
